@@ -1,0 +1,34 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "marketplace-2065",
+          "appId": "1:369381806316:android:c100593511e0ae748415c9",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "marketplace-2065",
+          "configurations": {
+            "android": "1:369381806316:android:c100593511e0ae748415c9",
+            "ios": "1:369381806316:ios:e711dd0a71bffafa8415c9",
+            "macos": "1:369381806316:ios:e711dd0a71bffafa8415c9"
+          }
+        }
+      }
+    }
+  },
+  "functions": {
+    "source": "functions",
+    "runtime": "nodejs20",
+    "codebase": "default",
+    "ignore": [
+      "node_modules",
+      ".git",
+      "firebase-debug.log",
+      "firebase-debug.*.log"
+    ]
+  }
+}

@@ -1,0 +1,1395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        /* ============================================
+           CSS VARIABLES & RESET
+        ============================================ */
+        :root {
+            --bg-primary: #0D0D1A;
+            --bg-card: #1A1A2E;
+            --bg-secondary: #16213E;
+            --primary: #8B5CF6;
+            --accent: #FBBF24;
+            --teal: #06B6D4;
+            --pink: #EC4899;
+            --green: #10B981;
+            --orange: #F97316;
+            --error: #EF4444;
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --text-muted: #64748B;
+            --border: #334155;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #0d0d1a 50%, #1a1a2e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* ============================================
+           PHONE FRAME
+        ============================================ */
+        .phone-frame {
+            width: 375px;
+            height: 812px;
+            background: var(--bg-primary);
+            border-radius: 50px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 
+                0 0 0 12px #1a1a2e,
+                0 0 0 14px #333,
+                0 50px 100px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Notch */
+        .phone-notch {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 20px 20px;
+            z-index: 100;
+        }
+
+        .phone-notch::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+        }
+
+        /* Status indicator */
+        .status-dot {
+            position: absolute;
+            top: 8px;
+            left: 20px;
+            width: 10px;
+            height: 10px;
+            background: var(--primary);
+            border-radius: 50%;
+            border: 2px solid var(--bg-primary);
+            z-index: 101;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* ============================================
+           APP CONTAINER
+        ============================================ */
+        .app-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding-top: 50px;
+            overflow: hidden;
+        }
+
+        /* Screens */
+        .screen {
+            flex: 1;
+            overflow-y: auto;
+            display: none;
+            padding-bottom: 80px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .screen::-webkit-scrollbar {
+            width: 0;
+        }
+
+        /* ============================================
+           BOTTOM NAVIGATION
+        ============================================ */
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: var(--bg-card);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 10px 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .nav-item .material-icons-round {
+            font-size: 24px;
+            color: var(--text-muted);
+            transition: color 0.3s;
+        }
+
+        .nav-item.active .material-icons-round {
+            color: var(--primary);
+        }
+
+        .nav-item span {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .nav-item.active span {
+            color: var(--primary);
+        }
+
+        /* ============================================
+           HOME SCREEN
+        ============================================ */
+        .home-header {
+            padding: 20px;
+        }
+
+        .logo-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary), var(--teal));
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .greeting {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Quick Actions Grid */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 0 20px;
+            margin-top: 28px;
+        }
+
+        .action-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid rgba(51, 65, 85, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary);
+        }
+
+        .action-emoji {
+            font-size: 40px;
+        }
+
+        .action-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Campaigns */
+        .section-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+            padding: 28px 20px 16px;
+        }
+
+        .campaigns-scroll {
+            display: flex;
+            gap: 16px;
+            padding: 0 20px;
+            overflow-x: auto;
+        }
+
+        .campaign-card {
+            min-width: 260px;
+            height: 140px;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .campaign-card.pink { background: linear-gradient(135deg, var(--pink), rgba(236, 72, 153, 0.6)); }
+        .campaign-card.teal { background: linear-gradient(135deg, var(--teal), rgba(6, 182, 212, 0.6)); }
+        .campaign-card.orange { background: linear-gradient(135deg, var(--orange), rgba(249, 115, 22, 0.6)); }
+
+        .campaign-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .campaign-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 20px;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            width: fit-content;
+        }
+
+        /* Activity Cards */
+        .activity-list {
+            padding: 0 20px;
+        }
+
+        .activity-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+
+        .activity-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .activity-user {
+            font-weight: 600;
+            color: var(--text-primary);
+            flex: 1;
+        }
+
+        .activity-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .activity-content {
+            color: var(--text-primary);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .activity-likes {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: var(--pink);
+            font-size: 12px;
+        }
+
+        .activity-likes .material-icons-round {
+            font-size: 18px;
+        }
+
+        /* ============================================
+           RIDE SCREEN
+        ============================================ */
+        .map-area {
+            height: 280px;
+            background: linear-gradient(to bottom, var(--bg-secondary), var(--bg-primary));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .map-grid {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                linear-gradient(rgba(51, 65, 85, 0.3) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(51, 65, 85, 0.3) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        .map-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 48px;
+            height: 48px;
+            background: var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .map-marker .material-icons-round {
+            color: white;
+            font-size: 24px;
+        }
+
+        .map-header {
+            position: absolute;
+            top: 16px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .map-title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .live-badge {
+            padding: 6px 12px;
+            background: var(--green);
+            border-radius: 20px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .rides-section {
+            padding: 20px;
+        }
+
+        .rides-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .rides-count {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ride-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+
+        .ride-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ride-icon {
+            width: 44px;
+            height: 44px;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ride-icon .material-icons-round {
+            color: var(--primary);
+        }
+
+        .ride-info {
+            flex: 1;
+        }
+
+        .ride-driver {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .ride-seats {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ride-price {
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .ride-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .ride-route {
+            margin-bottom: 12px;
+        }
+
+        .route-point {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .route-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .route-dot.start { background: var(--green); }
+        .route-dot.end { background: var(--pink); }
+
+        .route-line {
+            width: 2px;
+            height: 20px;
+            background: var(--border);
+            margin-left: 4px;
+        }
+
+        .join-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .join-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* ============================================
+           SHOP SCREEN
+        ============================================ */
+        .shop-header {
+            padding: 20px;
+        }
+
+        .shop-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .shop-subtitle {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .search-bar .material-icons-round {
+            color: var(--text-muted);
+        }
+
+        .search-bar span {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .categories {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .category-chip {
+            padding: 8px 16px;
+            background: var(--bg-card);
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-chip.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: white;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            padding: 20px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+
+        .product-image {
+            height: 120px;
+            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .product-info {
+            padding: 12px;
+        }
+
+        .product-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 14px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-shop {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .product-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        .add-btn {
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .add-btn .material-icons-round {
+            color: white;
+            font-size: 16px;
+        }
+
+        /* ============================================
+           SOCIAL SCREEN
+        ============================================ */
+        .social-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .social-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .new-post-btn {
+            width: 44px;
+            height: 44px;
+            background: var(--primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .new-post-btn .material-icons-round {
+            color: white;
+        }
+
+        .posts-list {
+            padding: 0 20px;
+        }
+
+        .post-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .post-user-info {
+            flex: 1;
+        }
+
+        .post-username {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .post-time {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .post-more {
+            color: var(--text-muted);
+        }
+
+        .post-content {
+            color: var(--text-primary);
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .post-divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 12px;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 24px;
+        }
+
+        .post-action {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--text-muted);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .post-action.liked {
+            color: var(--pink);
+        }
+
+        .post-action .material-icons-round {
+            font-size: 20px;
+        }
+
+        /* ============================================
+           PROFILE SCREEN
+        ============================================ */
+        .profile-header {
+            margin: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary), var(--teal));
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-avatar {
+            width: 72px;
+            height: 72px;
+            background: white;
+            border-radius: 50%;
+            border: 3px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .profile-handle {
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 8px;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 16px;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .role-badge .material-icons-round {
+            font-size: 14px;
+        }
+
+        .menu-list {
+            padding: 0 20px;
+        }
+
+        .menu-item {
+            background: var(--bg-card);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(51, 65, 85, 0.3);
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .menu-item:hover {
+            border-color: var(--primary);
+        }
+
+        .menu-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 14px;
+        }
+
+        .menu-icon.purple { background: rgba(139, 92, 246, 0.1); }
+        .menu-icon.purple .material-icons-round { color: var(--primary); }
+        
+        .menu-icon.pink { background: rgba(236, 72, 153, 0.1); }
+        .menu-icon.pink .material-icons-round { color: var(--pink); }
+        
+        .menu-icon.teal { background: rgba(6, 182, 212, 0.1); }
+        .menu-icon.teal .material-icons-round { color: var(--teal); }
+        
+        .menu-icon.orange { background: rgba(249, 115, 22, 0.1); }
+        .menu-icon.orange .material-icons-round { color: var(--orange); }
+        
+        .menu-icon.yellow { background: rgba(251, 191, 36, 0.1); }
+        .menu-icon.yellow .material-icons-round { color: var(--accent); }
+        
+        .menu-icon.gray { background: rgba(100, 116, 139, 0.1); }
+        .menu-icon.gray .material-icons-round { color: var(--text-muted); }
+        
+        .menu-icon.red { background: rgba(239, 68, 68, 0.1); }
+        .menu-icon.red .material-icons-round { color: var(--error); }
+
+        .menu-text {
+            flex: 1;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .menu-text.red { color: var(--error); }
+
+        .menu-arrow {
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame">
+        <div class="status-dot"></div>
+        <div class="phone-notch"></div>
+        
+        <div class="app-container">
+            <!-- HOME SCREEN -->
+            <div class="screen active" id="home-screen">
+                <div class="home-header">
+                    <div class="logo-row">
+                        <div class="logo">M</div>
+                        <div class="app-title">Marketplace</div>
+                    </div>
+                    <div class="greeting">Hello, Priya Sharma! 👋</div>
+                </div>
+
+                <div class="quick-actions">
+                    <div class="action-card" onclick="switchTab(2)">
+                        <div class="action-emoji">🛍️</div>
+                        <div class="action-label">Shop</div>
+                    </div>
+                    <div class="action-card" onclick="switchTab(1)">
+                        <div class="action-emoji">🚗</div>
+                        <div class="action-label">Ride</div>
+                    </div>
+                    <div class="action-card" onclick="switchTab(3)">
+                        <div class="action-emoji">💬</div>
+                        <div class="action-label">Social</div>
+                    </div>
+                    <div class="action-card">
+                        <div class="action-emoji">✨</div>
+                        <div class="action-label">More</div>
+                    </div>
+                </div>
+
+                <div class="section-title">🔥 Hot Deals</div>
+                <div class="campaigns-scroll">
+                    <div class="campaign-card pink">
+                        <div class="campaign-title">Winter Sale</div>
+                        <div class="campaign-badge">50% OFF</div>
+                    </div>
+                    <div class="campaign-card teal">
+                        <div class="campaign-title">New Arrivals</div>
+                        <div class="campaign-badge">Shop Now</div>
+                    </div>
+                    <div class="campaign-card orange">
+                        <div class="campaign-title">Flash Deal</div>
+                        <div class="campaign-badge">₹99 Only</div>
+                    </div>
+                </div>
+
+                <div class="section-title">Recent Activity</div>
+                <div class="activity-list">
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <div class="avatar">A</div>
+                            <div class="activity-user">Ankit M.</div>
+                            <div class="activity-time">2h ago</div>
+                        </div>
+                        <div class="activity-content">Just got my order from TechZone! Amazing delivery speed 🚀</div>
+                        <div class="activity-likes">
+                            <span class="material-icons-round">favorite</span>
+                            <span>24</span>
+                        </div>
+                    </div>
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <div class="avatar">P</div>
+                            <div class="activity-user">Priya S.</div>
+                            <div class="activity-time">4h ago</div>
+                        </div>
+                        <div class="activity-content">Shared a ride to work today, saved ₹100! 🎉</div>
+                        <div class="activity-likes">
+                            <span class="material-icons-round">favorite</span>
+                            <span>18</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIDE SCREEN -->
+            <div class="screen" id="ride-screen">
+                <div class="map-area">
+                    <div class="map-grid"></div>
+                    <div class="map-marker">
+                        <span class="material-icons-round">location_on</span>
+                    </div>
+                    <div class="map-header">
+                        <div class="map-title">🚗 Find a Ride</div>
+                        <div class="live-badge">Live</div>
+                    </div>
+                </div>
+                <div class="rides-section">
+                    <div class="rides-header">
+                        <div class="section-title" style="padding: 0;">Available Rides</div>
+                        <div class="rides-count">3 nearby</div>
+                    </div>
+                    
+                    <div class="ride-card">
+                        <div class="ride-top">
+                            <div class="ride-icon">
+                                <span class="material-icons-round">directions_car</span>
+                            </div>
+                            <div class="ride-info">
+                                <div class="ride-driver">Rahul K.</div>
+                                <div class="ride-seats">2 seats available</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="ride-price">₹45</div>
+                                <div class="ride-time">10:30 AM</div>
+                            </div>
+                        </div>
+                        <div class="ride-route">
+                            <div class="route-point">
+                                <div class="route-dot start"></div>
+                                <span>Patia Square</span>
+                            </div>
+                            <div class="route-line"></div>
+                            <div class="route-point">
+                                <div class="route-dot end"></div>
+                                <span>Infocity</span>
+                            </div>
+                        </div>
+                        <button class="join-btn">Join Ride</button>
+                    </div>
+
+                    <div class="ride-card">
+                        <div class="ride-top">
+                            <div class="ride-icon">
+                                <span class="material-icons-round">directions_car</span>
+                            </div>
+                            <div class="ride-info">
+                                <div class="ride-driver">Amit S.</div>
+                                <div class="ride-seats">3 seats available</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="ride-price">₹60</div>
+                                <div class="ride-time">11:00 AM</div>
+                            </div>
+                        </div>
+                        <div class="ride-route">
+                            <div class="route-point">
+                                <div class="route-dot start"></div>
+                                <span>Jaydev Vihar</span>
+                            </div>
+                            <div class="route-line"></div>
+                            <div class="route-point">
+                                <div class="route-dot end"></div>
+                                <span>Railway Station</span>
+                            </div>
+                        </div>
+                        <button class="join-btn">Join Ride</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SHOP SCREEN -->
+            <div class="screen" id="shop-screen">
+                <div class="shop-header">
+                    <div class="shop-title">🛒 Marketplace</div>
+                    <div class="shop-subtitle">Discover amazing products</div>
+                    <div class="search-bar">
+                        <span class="material-icons-round">search</span>
+                        <span>Search products...</span>
+                    </div>
+                    <div class="categories">
+                        <div class="category-chip active">All</div>
+                        <div class="category-chip">Electronics</div>
+                        <div class="category-chip">Fashion</div>
+                        <div class="category-chip">Home</div>
+                        <div class="category-chip">Sports</div>
+                    </div>
+                </div>
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-image">🎧</div>
+                        <div class="product-info">
+                            <div class="product-name">Wireless Earbuds</div>
+                            <div class="product-shop">TechZone</div>
+                            <div class="product-bottom">
+                                <div class="product-price">₹2,499</div>
+                                <div class="add-btn"><span class="material-icons-round">add</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">⌚</div>
+                        <div class="product-info">
+                            <div class="product-name">Smart Watch</div>
+                            <div class="product-shop">GadgetHub</div>
+                            <div class="product-bottom">
+                                <div class="product-price">₹4,999</div>
+                                <div class="add-btn"><span class="material-icons-round">add</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">🎒</div>
+                        <div class="product-info">
+                            <div class="product-name">Backpack Pro</div>
+                            <div class="product-shop">StyleCraft</div>
+                            <div class="product-bottom">
+                                <div class="product-price">₹1,299</div>
+                                <div class="add-btn"><span class="material-icons-round">add</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">☕</div>
+                        <div class="product-info">
+                            <div class="product-name">Coffee Maker</div>
+                            <div class="product-shop">HomeEssentials</div>
+                            <div class="product-bottom">
+                                <div class="product-price">₹3,499</div>
+                                <div class="add-btn"><span class="material-icons-round">add</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">👟</div>
+                        <div class="product-info">
+                            <div class="product-name">Running Shoes</div>
+                            <div class="product-shop">SportMax</div>
+                            <div class="product-bottom">
+                                <div class="product-price">₹2,999</div>
+                                <div class="add-btn"><span class="material-icons-round">add</span></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="product-card">
+                        <div class="product-image">💡</div>
+                        <div class="product-info">
+                            <div class="product-name">Desk Lamp</div>
+                            <div class="product-shop">LightWorld</div>
+                            <div class="product-bottom">
+                                <div class="product-price">₹899</div>
+                                <div class="add-btn"><span class="material-icons-round">add</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SOCIAL SCREEN -->
+            <div class="screen" id="social-screen">
+                <div class="social-header">
+                    <div class="social-title">💬 Social Feed</div>
+                    <div class="new-post-btn">
+                        <span class="material-icons-round">add</span>
+                    </div>
+                </div>
+                <div class="posts-list">
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">A</div>
+                            <div class="post-user-info">
+                                <div class="post-username">Ankit M.</div>
+                                <div class="post-time">2h ago</div>
+                            </div>
+                            <span class="material-icons-round post-more">more_horiz</span>
+                        </div>
+                        <div class="post-content">Just got my order from TechZone! Amazing delivery speed 🚀</div>
+                        <div class="post-divider"></div>
+                        <div class="post-actions">
+                            <div class="post-action liked">
+                                <span class="material-icons-round">favorite</span>
+                                <span>24</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="material-icons-round">chat_bubble_outline</span>
+                                <span>Comment</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="material-icons-round">share</span>
+                                <span>Share</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">P</div>
+                            <div class="post-user-info">
+                                <div class="post-username">Priya S.</div>
+                                <div class="post-time">4h ago</div>
+                            </div>
+                            <span class="material-icons-round post-more">more_horiz</span>
+                        </div>
+                        <div class="post-content">Shared a ride to work today, saved ₹100! 🎉</div>
+                        <div class="post-divider"></div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <span class="material-icons-round">favorite_border</span>
+                                <span>18</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="material-icons-round">chat_bubble_outline</span>
+                                <span>Comment</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="material-icons-round">share</span>
+                                <span>Share</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="post-card">
+                        <div class="post-header">
+                            <div class="post-avatar">R</div>
+                            <div class="post-user-info">
+                                <div class="post-username">Rohit K.</div>
+                                <div class="post-time">6h ago</div>
+                            </div>
+                            <span class="material-icons-round post-more">more_horiz</span>
+                        </div>
+                        <div class="post-content">Check out this amazing coffee maker I bought!</div>
+                        <div class="post-divider"></div>
+                        <div class="post-actions">
+                            <div class="post-action">
+                                <span class="material-icons-round">favorite_border</span>
+                                <span>42</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="material-icons-round">chat_bubble_outline</span>
+                                <span>Comment</span>
+                            </div>
+                            <div class="post-action">
+                                <span class="material-icons-round">share</span>
+                                <span>Share</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROFILE SCREEN -->
+            <div class="screen" id="profile-screen">
+                <div class="profile-header">
+                    <div class="profile-top">
+                        <div class="profile-avatar">👤</div>
+                        <div class="profile-info">
+                            <div class="profile-name">Priya Sharma</div>
+                            <div class="profile-handle">@priya_s</div>
+                            <div class="role-badge">
+                                <span class="material-icons-round">person</span>
+                                <span>Customer</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="menu-list">
+                    <div class="menu-item">
+                        <div class="menu-icon purple">
+                            <span class="material-icons-round">history</span>
+                        </div>
+                        <div class="menu-text">Order History</div>
+                        <span class="material-icons-round menu-arrow">chevron_right</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon pink">
+                            <span class="material-icons-round">favorite_border</span>
+                        </div>
+                        <div class="menu-text">Saved Items</div>
+                        <span class="material-icons-round menu-arrow">chevron_right</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon teal">
+                            <span class="material-icons-round">location_on</span>
+                        </div>
+                        <div class="menu-text">Addresses</div>
+                        <span class="material-icons-round menu-arrow">chevron_right</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon orange">
+                            <span class="material-icons-round">payment</span>
+                        </div>
+                        <div class="menu-text">Payment Methods</div>
+                        <span class="material-icons-round menu-arrow">chevron_right</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon yellow">
+                            <span class="material-icons-round">notifications</span>
+                        </div>
+                        <div class="menu-text">Notifications</div>
+                        <span class="material-icons-round menu-arrow">chevron_right</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon gray">
+                            <span class="material-icons-round">settings</span>
+                        </div>
+                        <div class="menu-text">Settings</div>
+                        <span class="material-icons-round menu-arrow">chevron_right</span>
+                    </div>
+                    <div class="menu-item">
+                        <div class="menu-icon red">
+                            <span class="material-icons-round">logout</span>
+                        </div>
+                        <div class="menu-text red">Sign Out</div>
+                        <span class="material-icons-round menu-arrow">chevron_right</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM NAVIGATION -->
+        <div class="bottom-nav">
+            <div class="nav-item active" onclick="switchTab(0)">
+                <span class="material-icons-round">home</span>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" onclick="switchTab(1)">
+                <span class="material-icons-round">directions_car</span>
+                <span>Ride</span>
+            </div>
+            <div class="nav-item" onclick="switchTab(2)">
+                <span class="material-icons-round">storefront</span>
+                <span>Shop</span>
+            </div>
+            <div class="nav-item" onclick="switchTab(3)">
+                <span class="material-icons-round">chat_bubble</span>
+                <span>Social</span>
+            </div>
+            <div class="nav-item" onclick="switchTab(4)">
+                <span class="material-icons-round">person</span>
+                <span>Profile</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const screens = ['home-screen', 'ride-screen', 'shop-screen', 'social-screen', 'profile-screen'];
+        const navItems = document.querySelectorAll('.nav-item');
+
+        function switchTab(index) {
+            // Hide all screens
+            screens.forEach(id => {
+                document.getElementById(id).classList.remove('active');
+            });
+            
+            // Show selected screen
+            document.getElementById(screens[index]).classList.add('active');
+            
+            // Update nav items
+            navItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+        }
+
+        // Category chip selection
+        document.querySelectorAll('.category-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                document.querySelectorAll('.category-chip').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Like button toggle
+        document.querySelectorAll('.post-action').forEach(action => {
+            if (action.querySelector('.material-icons-round').textContent === 'favorite_border') {
+                action.addEventListener('click', function() {
+                    const icon = this.querySelector('.material-icons-round');
+                    if (icon.textContent === 'favorite_border') {
+                        icon.textContent = 'favorite';
+                        this.classList.add('liked');
+                    } else {
+                        icon.textContent = 'favorite_border';
+                        this.classList.remove('liked');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+﻿Analyzing create_post_screen.dart...
+
+   info - create_post_screen.dart:109:24 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+
+1 issue found.

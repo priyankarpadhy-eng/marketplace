@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "369381806316",
+    "project_id": "marketplace-2065",
+    "storage_bucket": "marketplace-2065.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:369381806316:android:c100593511e0ae748415c9",
+        "android_client_info": {
+          "package_name": "marketplace.shop.marketplace"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "369381806316-a5ul6n7r88mt8t0eeujskjh2nmcmo417.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "marketplace.shop.marketplace",
+            "certificate_hash": "a392d03a65f0cd7812adde9527ce283bcbc2c058"
+          }
+        },
+        {
+          "client_id": "369381806316-hgj6h9anmloe2fjvf0orqsd6bcov442p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBU3FxqsSL0qHXFxlYCZ_j1kPXV0jKOB3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "369381806316-hgj6h9anmloe2fjvf0orqsd6bcov442p.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "369381806316-8nvekfm5n9h5kjaclfj4f12pq3n3colf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "marketplace.shop.marketplace"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

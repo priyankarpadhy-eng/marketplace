@@ -1,0 +1,13 @@
+ Volume in drive C has no label.
+ Volume Serial Number is F2AA-C72C
+
+ Directory of C:\Users\priya\StudioProjects\marketplace\android\app
+
+05-01-2026  12:56    <DIR>          .
+05-01-2026  20:44    <DIR>          ..
+05-01-2026  13:04             2,140 build.gradle.kts
+04-01-2026  16:10             1,607 google-services.json
+05-01-2026  12:56               182 proguard-rules.pro
+04-01-2026  15:28    <DIR>          src
+               3 File(s)          3,929 bytes
+               3 Dir(s)  209,724,166,144 bytes free

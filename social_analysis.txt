@@ -1,0 +1,12 @@
+﻿Analyzing social...
+
+   info - comments_sheet.dart:247:30 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - create_post_screen.dart:100:24 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - create_post_screen.dart:562:7 - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check. - use_build_context_synchronously
+   info - create_post_screen.dart:564:28 - Don't use 'BuildContext's across async gaps. Try rewriting the code to not use the 'BuildContext', or guard the use with a 'mounted' check. - use_build_context_synchronously
+   info - social_feed_screen.dart:97:20 - Unnecessary use of multiple underscores. Try using '_'. - unnecessary_underscores
+   info - social_screen.dart:43:51 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - social_screen.dart:73:36 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+   info - social_screen.dart:80:38 - 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement. - deprecated_member_use
+
+8 issues found.
